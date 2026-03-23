@@ -1,11 +1,5 @@
 ## Complete Cloud Lab Walkthrough
 
-In general, this document should not be needed. The following steps will guide you through stetting up the cloud lab resources in Azure in the event that students missed days or need to setup the lab all at once to use it for the upcoming project week.
-
-These are the same steps that are covered throughout the activities in the cloud weeks.
-
-**VERY IMPORTANT:** PAY ATTENTION TO THE USERS THAT YOU CREATE THROUGHOUT THE VARIOUS STEPS. THE EXERCISES BELOW PROVIDE EXAMPLE USERS, BUT MAKE SURE YOU NOTE AND USE THE USER THAT YOU CREATE.
-
 ---
 
 #### Setting up the Resource Group
