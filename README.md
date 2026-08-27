@@ -8,7 +8,7 @@ Use the Azure portal to create a resource group that will contain everything the
 
 - On the home screen, search for "resource."
 
-    ![](1/Images/resource_group/search_resource.png)
+    ![](Resources/1/Images/resource_group/search_resource.png)
 
 - Click on the **+ Create** button or the **Create resource group** button.
 
