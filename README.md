@@ -12,7 +12,7 @@ Use the Azure portal to create a resource group that will contain everything the
 
 - Click on the **+ Create** button or the **Create resource group** button.
 
-    ![](1/Images/ResourceGroupsInfo1.png)
+    ![](Resources/1/Images/ResourceGroupsInfo1.png)
 
 - Create a name for your resource group and choose a region.        
     - Note: Choose a region that you can easily remember. Every resource you create after this must be created in the exact same region.
