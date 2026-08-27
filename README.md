@@ -19,15 +19,15 @@ Use the Azure portal to create a resource group that will contain everything the
 
 - Click on **Review + create**.
 
-    ![](1/Images/resource_group/name_resource.png)
+    ![](Resources/1/Images/resource_group/name_resource.png)
 
 - Azure will alert you if there are any errors. Click on **Create** to finalize your settings and create the group.
 
-    ![](1/Images/resource_group/create_resource.png)
+    ![](Resources/1/Images/resource_group/create_resource.png)
 
 - Once the group is created, click on **Go to resource group** in the top-right corner of the screen to view your new resource group.
 
-    ![](1/Images/resource_group/go_to_resouce.png)
+    ![](Resources/1/Images/resource_group/go_to_resouce.png)
 
 ---
 
@@ -39,11 +39,11 @@ Before you can deploy servers and services, there must be a network where these 
 
 - Return to the home screen and search for "net." Choose the search result for **Virtual networks**.
 
-    ![](1/Images/virtual_net/search_network.png)
+    ![](Resources/1/Images/virtual_net/search_network.png)
 
 - Click on the **+ Create** button on the top-left of the page or the **Create virtual network** button on the bottom of the page.
 
-    ![](1/Images/add_network1.png) 
+    ![](Resources/1/Images/add_network1.png) 
 
 Fill in the network settings:
 
@@ -57,30 +57,30 @@ Fill in the network settings:
 
     - Carefully configuring the region of your resources is important for ensuring low latency and high availability. Resources should be located as close as possible to those who will be consuming them.
 
-![](1/Activities/04_Virtual_Networking/Solved/Images/virtual_net/vNet1.png)
+![](Resources/1/Activities/04_Virtual_Networking/Solved/Images/virtual_net/vNet1.png)
 
 - IP Addresses: Azure requires you to define a network and subnet.
     - Use the defaults on this tab.
 
-![](1/Activities/04_Virtual_Networking/Solved/Images/virtual_net/vNet2.png)
+![](Resources/1/Activities/04_Virtual_Networking/Solved/Images/virtual_net/vNet2.png)
 
 - Security: Leave the default settings.
 
-![](1/Images/virtual_net/vNet3.png)
+![](Resources/1/Images/virtual_net/vNet3.png)
 
 - Tags: No tags are needed.
 
-![](1/Activities/04_Virtual_Networking/Solved/Images/virtual_net/vNet4.png)
+![](Resources/1/Activities/04_Virtual_Networking/Solved/Images/virtual_net/vNet4.png)
 
 Click **Create**.
 
-![](1/Activities/04_Virtual_Networking/Solved/Images/virtual_net/create_network.png)
+![](Resources/1/Activities/04_Virtual_Networking/Solved/Images/virtual_net/create_network.png)
 
 Once you have created your resource group and VNet, return to the home screen and choose the resource group option. 
 - This provides a list of all resource groups in your account. 
 - Choose the group that you created and you should see your VNet listed as a resource. 
 
-![](1/Activities/04_Virtual_Networking/Solved/Images/virtual_net/final_resource_group.png)
+![](Resources/1/Activities/04_Virtual_Networking/Solved/Images/virtual_net/final_resource_group.png)
 
 You now have a resource group and VNet that you can use to create the rest of the cloud infrastructure throughout the unit.
 
@@ -90,7 +90,7 @@ You now have a resource group and VNet that you can use to create the rest of th
 
 - On your Azure portal home screen, search "net" and choose **Network security groups**. 
 
-![](1/Images/security_groups/search_net.png)
+![](Resources/1/Images/security_groups/search_net.png)
 
 - Create a new security group.
 
@@ -100,7 +100,7 @@ You now have a resource group and VNet that you can use to create the rest of th
 
 - Make sure the security group is in the same region that you chose during the previous activity.
 
-![](1/Images/security_groups/create_nsg.png)
+![](Resources/1/Images/security_groups/create_nsg.png)
 
 To create an inbound rule to block all traffic:
 
@@ -110,7 +110,7 @@ To create an inbound rule to block all traffic:
 
 - Click on the **+ Add** button to add a rule.
 
-![](1/Images/security_groups/add_inbound_rule.png)
+![](Resources/1/Images/security_groups/add_inbound_rule.png)
 
 Configure the inbound rule as follows:
 
@@ -132,13 +132,13 @@ Configure the inbound rule as follows:
 
 - Name: Give your rule a name like "Default-Deny."
 
-![](1/Images/inbound_rule_settings1.png)
+![](Resources/1/Images/inbound_rule_settings1.png)
 
 - Description: Write a quick description similar to "Deny all inbound traffic."
 
 - Save the rule.
 
-![](1/Images/security_groups/Overview.png)
+![](Resources/1/Images/security_groups/Overview.png)
 
 You should now have a VNet protected by a network security group that blocks all traffic.
 
@@ -203,7 +203,7 @@ Open your Azure portal and search for "virtual machines."
 
 - Use the **+ Add** button or the **Create virtual machine** button to create a new VM.
 
-    ![](1/Images/VM/CreateVM.png)
+    ![](Resources/1/Images/VM/CreateVM.png)
 
 Use the following settings for this VM: 
 
@@ -236,7 +236,7 @@ For SSH, use the following settings:
 
 - Select inbound ports: Ignore this setting. It will be overwritten when you choose your security group.
 
-![](1/Images/VM/VMSettings.png)
+![](Resources/1/Images/VM/VMSettings.png)
 
 Move to the **Networking** tab and set the following settings:
 
@@ -256,11 +256,11 @@ Move to the **Networking** tab and set the following settings:
 
 - Load balancing: Keep as the default setting (No).
 
-    ![](1/Images/VM/VMNetworking.png)
+    ![](Resources/1/Images/VM/VMNetworking.png)
 
 - Click on **Review + create**.
 
-    ![](1/Images/VM/FinalizeVM.png)
+    ![](Resources/1/Images/VM/FinalizeVM.png)
 
 - Finalize all your settings and create the VM by clicking on the **Create** button.
 
@@ -290,7 +290,7 @@ Create 2 more new VMs. Keep the following in mind when configuring these VM's:
 **VERY IMPORTANT:** Make sure both of these VM's are in the same availability Set. Machines that are not in the same availability set cannot be added to the same load balancer later, and will have to be deleted and recreated in the same availability set.  
 - Under Availability Options, select 'Availability Set'. Click on 'Create New' under the Availability set. Give it an appropriate name. After creating it on the first VM, choose it for the second VM.
 
-![](1/Images/Avail_Set/Avail-Set.png)
+![](Resources/1/Images/Avail_Set/Avail-Set.png)
 
 In the **Networking** tab and set the following settings:
 
@@ -300,7 +300,7 @@ In the **Networking** tab and set the following settings:
 
 - Public IP: NONE! Make sure these web VM's do not have a public IP address.
 
-![](1/Images/Avail_Set/No-Ip.png)
+![](Resources/1/Images/Avail_Set/No-Ip.png)
 
 - NIC network security group: Choose the Advanced option so we can specify our custom security group.
 
@@ -316,7 +316,7 @@ In the **Networking** tab and set the following settings:
 
 The final WebVM's should resemble the following:
 
-![](1/Images/Avail_Set/final-VM.png)
+![](Resources/1/Images/Avail_Set/final-VM.png)
 
 #### Setting up your Jump Box Administration
 
