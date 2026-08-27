@@ -357,7 +357,7 @@ Next, log into portal.azure.com to create a security group rule to allow SSH con
         - Description: Write a short description similar to: "Allow SSH from my IP." 
 
 
-	![](2/Images/limit-ip1.png)
+	![](Resources/2/Images/Docker_Ansible/limit-ip1.png)
 
 
 4. Use your command line to SSH to the VM for administration. Windows users should use GitBash.
@@ -381,7 +381,7 @@ Please note that your public IP address will change depending on your location.
 
 **NOTE:** If you need to reset your SSH key, you can do so in the VM details page by selecting 'Reset Password' on the left had column.
 
-![](2/Images/SSH-Jump/password-reset.png)
+![](Resources/2/Images/Docker_Ansible/password-reset.png)
 
 ---
 
@@ -393,7 +393,7 @@ The goal of this activity was to configure your jump box to run Docker container
 
     - Run `sudo apt update` then `sudo apt install docker.io`
     
-  ![](2/Images/Docker_Ansible/Docker_Install.png)
+  ![](Resources/2/Images/Docker_Ansible/Docker_Install.png)
 
 2. Verify that the Docker service is running.
 
@@ -401,13 +401,13 @@ The goal of this activity was to configure your jump box to run Docker container
 
       - **Note:** If the Docker service is not running, start it with `sudo systemctl start docker`.
 
- ![](2/Images/Docker_Ansible/Docker_Process.png)
+ ![](Resources/2/Images/Docker_Ansible/Docker_Process.png)
 
 3. Once Docker is installed, pull the container `cyberxsecurity/ansible`.
 
     - Run `sudo docker pull cyberxsecurity/ansible`.
 
-![](2/Images/Docker_Ansible/Docker_Pull.png)
+![](Resources/2/Images/Docker_Ansible/Docker_Pull.png)
 
     - You can also switch to the root user so you don't have to keep typing `sudo`.
 
@@ -420,13 +420,13 @@ The goal of this activity was to configure your jump box to run Docker container
 
     - Run `exit` to quit.
 
-![](2/Images/Docker_Ansible/Container_Connected.png)
+![](Resources/2/Images/Docker_Ansible/Container_Connected.png)
 
 5. Create a new security group rule that allows your jump box machine full access to your VNet.
 
     - Get the private IP address of your jump box.
 
-    ![](2/Images/Docker_Ansible/VM_IP_Address.png)
+    ![](Resources/2/Images/Docker_Ansible/VM_IP_Address.png)
 
     - Go to your security group settings and create an inbound rule. Create rules allowing SSH connections from your IP address.
 
@@ -450,11 +450,11 @@ The goal of this activity was to configure your jump box to run Docker container
 
         - Description: Write a short description similar to: "Allow SSH from the jump box IP."
 
-        ![](2/Images/JumpBox_settings1.png)
+        ![](Resources/2/Images/Docker_Ansible/JumpBox_settings1.png)
 
 Your final security group rules should be similar to this:
 
-![](2/Images/Docker_Ansible/Security_Rules.png)
+![](Resources/2/Images/Docker_Ansible/Security_Rules.png)
 
 ---
 
