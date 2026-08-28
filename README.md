@@ -32,6 +32,8 @@ This project builds a secure, segmented Azure environment to host a Red Team tra
 - **Controlled exposure** — only port 80 is exposed, and only through the load balancer, after the deny-all rule is explicitly lifted for that path.
 ---
 
+# Let's Begin!
+
 #### Setting up the Resource Group
 
 Use the Azure portal to create a resource group that will contain everything the Red Team needs in the cloud.
