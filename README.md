@@ -1,5 +1,4 @@
-## Azure Cloud Security Virtualization Complete Guide
-# ☁️ Azure Cloud Security Lab — Overview
+# ☁️ Azure Cloud Security Lab — Complete Guide
 
 ## Project Overview
 
@@ -15,21 +14,10 @@ This project builds a secure, segmented cloud environment in Microsoft Azure to 
 | **Virtual Network (VNet)** | Private network where all VMs and services communicate | Internal-only address space; the foundation for network segmentation |
 | **Subnet** | Segments the VNet; hosts the VMs | Internal IP addressing keeps web servers off the public internet |
 | **Network Security Group (NSG)** | Firewall controlling inbound/outbound traffic to the VNet and VMs | **Default-Deny rule** (priority 4096, blocks all traffic) as the baseline; explicit allow-rules layered above it at lower priority numbers |
-| **NSG — Default Deny rule** | Blocks all inbound traffic by default | Any source/port/protocol → Block; highest priority number so all other rules evaluate first — least-privilege baseline |
-| **NSG — SSH allow (my IP)** | Permits SSH to the jump box from the admin's IP only | Source scoped to a single external IP; destination limited to the jump box internal IP; port 22/TCP only |
-| **NSG — SSH allow (jump box IP)** | Permits the jump box to reach the internal VNet over SSH | Source scoped to the jump box's private IP; enables provisioning without opening SSH to the internet |
-| **NSG — HTTP allow (port 80)** | Exposes the web app to the internet through the load balancer | Scoped to HTTP/TCP port 80 to VirtualNetwork; added only after the deny-all rule is removed for LB traffic |
-| **VM 1 — Jump Box Provisioner** (Ubuntu 18.04, B1s, 1 vCPU/1 GB) | Single hardened entry point; runs Docker + Ansible to configure the web VMs | Only VM with controlled public access; SSH key-only; access restricted to admin IP via NSG; the sole bridge into the internal network |
-| **VM 2 & 3 — Web-1 / Web-2** (Ubuntu 18.04, B1ms, 1 vCPU/2 GB) | Internal web servers running the DVWA target container | **No public IP** — reachable only via the jump box; SSH key-only; placed in an Availability Set |
-| **SSH Key Pair (RSA 2048)** | Authenticates all VM access | **Password authentication disabled** — cryptographic keys only, preventing brute-force; keys rotated/overwritten during provisioner setup |
 | **Availability Set** | Groups Web-1 and Web-2 for resilience | Required for load-balancer membership; provides fault tolerance across the web tier |
 | **Docker (on jump box)** | Container runtime hosting the Ansible provisioner | Isolates the provisioning tooling in a container rather than installing on the host directly |
 | **Ansible container** (`cyberxsecurity/ansible`) | Infrastructure-as-code tool that configures the web VMs automatically | Provisions consistently via playbook; uses its own dedicated SSH key to reach web VMs; `remote_user` scoped to the admin account |
-| **Ansible playbook** (`pentest.yml`) | Automates install of Docker + DVWA on the web servers | Repeatable, auditable configuration; no manual per-server changes |
-| **DVWA container** (`cyberxsecurity/dvwa`) | The intentionally vulnerable web app — the Red Team attack target | Isolated inside a container on internal-only VMs; reachable externally only through the controlled port-80 path |
 | **Load Balancer** (static public IP) | Distributes inbound web traffic across Web-1 and Web-2 | Static frontend IP; **health probe** monitors VM availability; backend pool spans both web VMs |
-| **LB — Load balancing rule** | Forwards port 80 from the LB to the web VNet | TCP/80 → backend 80; **session persistence** set to Client IP so an attacker's session stays pinned to one server mid-exercise |
-| **LB — Health probe** | Regularly checks that backend VMs can receive traffic | Ensures traffic only routes to healthy VMs |
 
 ---
 
@@ -184,6 +172,9 @@ Configure the inbound rule as follows:
 
 You should now have a VNet protected by a network security group that blocks all traffic.
 
+| **NSG — Default Deny rule** | Blocks all inbound traffic by default | Any source/port/protocol → Block; highest priority number so all other rules evaluate first — least-privilege baseline |
+| **NSG — HTTP allow (port 80)** | Exposes the web app to the internet through the load balancer | Scoped to HTTP/TCP port 80 to VirtualNetwork; added only after the deny-all rule is removed for LB traffic |
+
 #### Setting up Virtual Machines
 
 The goal of this activity was to set up your first virtual machines inside your cloud network, which is protected by your network security group. You will use this machine as a jump box to access your cloud network and any other machines inside your VNet.
@@ -332,6 +323,10 @@ Create 2 more new VMs. Keep the following in mind when configuring these VM's:
 **VERY IMPORTANT:** Make sure both of these VM's are in the same availability Set. Machines that are not in the same availability set cannot be added to the same load balancer later, and will have to be deleted and recreated in the same availability set.  
 - Under Availability Options, select 'Availability Set'. Click on 'Create New' under the Availability set. Give it an appropriate name. After creating it on the first VM, choose it for the second VM.
 
+| **VM 1 — Jump Box Provisioner** (Ubuntu 18.04, B1s, 1 vCPU/1 GB) | Single hardened entry point; runs Docker + Ansible to configure the web VMs | Only VM with controlled public access; SSH key-only; access restricted to admin IP via NSG; the sole bridge into the internal network |
+| **VM 2 & 3 — Web-1 / Web-2** (Ubuntu 18.04, B1ms, 1 vCPU/2 GB) | Internal web servers running the DVWA target container | **No public IP** — reachable only via the jump box; SSH key-only; placed in an Availability Set |
+| **SSH Key Pair (RSA 2048)** | Authenticates all VM access | **Password authentication disabled** — cryptographic keys only, preventing brute-force; keys rotated/overwritten during provisioner setup |
+
 ![](Resources/1/Images/Avail_Set/Avail-Set.png)
 
 In the **Networking** tab and set the following settings:
@@ -398,6 +393,8 @@ Next, log into portal.azure.com to create a security group rule to allow SSH con
 
         - Description: Write a short description similar to: "Allow SSH from my IP." 
 
+| **NSG — SSH allow (my IP)** | Permits SSH to the jump box from the admin's IP only | Source scoped to a single external IP; destination limited to the jump box internal IP; port 22/TCP only |
+| **NSG — SSH allow (jump box IP)** | Permits the jump box to reach the internal VNet over SSH | Source scoped to the jump box's private IP; enables provisioning without opening SSH to the internet |
 
 	![](Resources/2/Images/Docker_Ansible/limit-ip1.png)
 
@@ -940,6 +937,8 @@ You will also need to use the `systemd` module to restart the docker service whe
 
       </head>
     ```
+| **Ansible playbook** (`pentest.yml`) | Automates install of Docker + DVWA on the web servers | Repeatable, auditable configuration; no manual per-server changes |
+| **DVWA container** (`cyberxsecurity/dvwa`) | The intentionally vulnerable web app — the Red Team attack target | Isolated inside a container on internal-only VMs; reachable externally only through the controlled port-80 path |
 
 ---
 
@@ -1016,6 +1015,9 @@ To complete this activity, you had to install a load balancer in front of the VM
     - Action: Set to **Allow** traffic.
 
     - Name: Choose an appropriate name that you can recognize later.
+  
+| **LB — Load balancing rule** | Forwards port 80 from the LB to the web VNet | TCP/80 → backend 80; **session persistence** set to Client IP so an attacker's session stays pinned to one server mid-exercise |
+| **LB — Health probe** | Regularly checks that backend VMs can receive traffic | Ensures traffic only routes to healthy VMs |
 
 ![](3/Images/HTTP-SG/HTTP-Rule.png)
 
