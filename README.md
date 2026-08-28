@@ -3,13 +3,7 @@
 
 ## Project Overview
 
-This project builds a secure, segmented cloud environment in Microsoft Azure to host a Red Team training range. The design follows a **ground-up security approach** — the network denies all traffic by default, and access is opened only where explicitly required, one rule at a time.
-
-The environment centers on a **jump box** architecture: a single hardened entry point (the jump box) is the only machine reachable from the internet, and it uses a Dockerized **Ansible** container to provision and configure two internal web servers automatically. Those web servers have **no public IP** and are only reachable through the jump box, isolating them from direct internet exposure. The web servers run a **DVWA (Damn Vulnerable Web Application)** container as the intentional attack target for Red Team practice.
-
-Access control is enforced through a **Network Security Group (NSG)** with a default-deny rule, layered SSH allow-rules scoped to specific source IPs, and **SSH key-only authentication** (password auth disabled) across every VM. Finally, a **Load Balancer** distributes inbound web traffic across the two web servers, with the NSG configured to expose only port 80 to the internet.
-
-The result is a repeatable lab that demonstrates core cloud-security principles: network segmentation, least-privilege access, secure remote administration, infrastructure-as-code provisioning, and controlled exposure of services.
+This project builds a secure, segmented cloud environment in Microsoft Azure to host a Red Team training range. The design follows a **ground-up security approach**.
 
 ---
 
@@ -1042,3 +1036,9 @@ To complete this activity, you had to install a load balancer in front of the VM
 **Note:** With the stated configuration, you will not be able to access these machines from another location unless the security Group rule is changed.
 
 ---
+
+Now we have an environment that centers on a **jump box** architecture: a single hardened entry point (the jump box) is the only machine reachable from the internet, and it uses a Dockerized **Ansible** container to provision and configure two internal web servers automatically. Those web servers have **no public IP** and are only reachable through the jump box, isolating them from direct internet exposure. The web servers run a **DVWA (Damn Vulnerable Web Application)** container as the intentional attack target for Red Team practice.
+
+Access control is enforced through a **Network Security Group (NSG)** with a default-deny rule, layered SSH allow-rules scoped to specific source IPs, and **SSH key-only authentication** (password auth disabled) across every VM. Finally, a **Load Balancer** distributes inbound web traffic across the two web servers, with the NSG configured to expose only port 80 to the internet.
+
+The result is a repeatable lab that demonstrates core cloud-security principles: network segmentation, least-privilege access, secure remote administration, infrastructure-as-code provisioning, and controlled exposure of services.
