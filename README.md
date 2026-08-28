@@ -1,5 +1,53 @@
 ## Azure Cloud Security Virtualization Complete Guide
+# ☁️ Azure Cloud Security Lab — Overview
 
+## Project Overview
+
+This project builds a secure, segmented cloud environment in Microsoft Azure to host a Red Team training range. The design follows a **ground-up security approach** — the network denies all traffic by default, and access is opened only where explicitly required, one rule at a time.
+
+The environment centers on a **jump box** architecture: a single hardened entry point (the jump box) is the only machine reachable from the internet, and it uses a Dockerized **Ansible** container to provision and configure two internal web servers automatically. Those web servers have **no public IP** and are only reachable through the jump box, isolating them from direct internet exposure. The web servers run a **DVWA (Damn Vulnerable Web Application)** container as the intentional attack target for Red Team practice.
+
+Access control is enforced through a **Network Security Group (NSG)** with a default-deny rule, layered SSH allow-rules scoped to specific source IPs, and **SSH key-only authentication** (password auth disabled) across every VM. Finally, a **Load Balancer** distributes inbound web traffic across the two web servers, with the NSG configured to expose only port 80 to the internet.
+
+The result is a repeatable lab that demonstrates core cloud-security principles: network segmentation, least-privilege access, secure remote administration, infrastructure-as-code provisioning, and controlled exposure of services.
+
+---
+
+## Azure Resources, Settings & Security Measures
+
+| Resource / Setting | Function | Security Measures Applied |
+| --- | --- | --- |
+| **Resource Group** | Logical container holding every resource for the lab in one region | Keeps all lab assets grouped and region-consistent for isolation and easy teardown |
+| **Virtual Network (VNet)** | Private network where all VMs and services communicate | Internal-only address space; the foundation for network segmentation |
+| **Subnet** | Segments the VNet; hosts the VMs | Internal IP addressing keeps web servers off the public internet |
+| **Network Security Group (NSG)** | Firewall controlling inbound/outbound traffic to the VNet and VMs | **Default-Deny rule** (priority 4096, blocks all traffic) as the baseline; explicit allow-rules layered above it at lower priority numbers |
+| **NSG — Default Deny rule** | Blocks all inbound traffic by default | Any source/port/protocol → Block; highest priority number so all other rules evaluate first — least-privilege baseline |
+| **NSG — SSH allow (my IP)** | Permits SSH to the jump box from the admin's IP only | Source scoped to a single external IP; destination limited to the jump box internal IP; port 22/TCP only |
+| **NSG — SSH allow (jump box IP)** | Permits the jump box to reach the internal VNet over SSH | Source scoped to the jump box's private IP; enables provisioning without opening SSH to the internet |
+| **NSG — HTTP allow (port 80)** | Exposes the web app to the internet through the load balancer | Scoped to HTTP/TCP port 80 to VirtualNetwork; added only after the deny-all rule is removed for LB traffic |
+| **VM 1 — Jump Box Provisioner** (Ubuntu 18.04, B1s, 1 vCPU/1 GB) | Single hardened entry point; runs Docker + Ansible to configure the web VMs | Only VM with controlled public access; SSH key-only; access restricted to admin IP via NSG; the sole bridge into the internal network |
+| **VM 2 & 3 — Web-1 / Web-2** (Ubuntu 18.04, B1ms, 1 vCPU/2 GB) | Internal web servers running the DVWA target container | **No public IP** — reachable only via the jump box; SSH key-only; placed in an Availability Set |
+| **SSH Key Pair (RSA 2048)** | Authenticates all VM access | **Password authentication disabled** — cryptographic keys only, preventing brute-force; keys rotated/overwritten during provisioner setup |
+| **Availability Set** | Groups Web-1 and Web-2 for resilience | Required for load-balancer membership; provides fault tolerance across the web tier |
+| **Docker (on jump box)** | Container runtime hosting the Ansible provisioner | Isolates the provisioning tooling in a container rather than installing on the host directly |
+| **Ansible container** (`cyberxsecurity/ansible`) | Infrastructure-as-code tool that configures the web VMs automatically | Provisions consistently via playbook; uses its own dedicated SSH key to reach web VMs; `remote_user` scoped to the admin account |
+| **Ansible playbook** (`pentest.yml`) | Automates install of Docker + DVWA on the web servers | Repeatable, auditable configuration; no manual per-server changes |
+| **DVWA container** (`cyberxsecurity/dvwa`) | The intentionally vulnerable web app — the Red Team attack target | Isolated inside a container on internal-only VMs; reachable externally only through the controlled port-80 path |
+| **Load Balancer** (static public IP) | Distributes inbound web traffic across Web-1 and Web-2 | Static frontend IP; **health probe** monitors VM availability; backend pool spans both web VMs |
+| **LB — Load balancing rule** | Forwards port 80 from the LB to the web VNet | TCP/80 → backend 80; **session persistence** set to Client IP so an attacker's session stays pinned to one server mid-exercise |
+| **LB — Health probe** | Regularly checks that backend VMs can receive traffic | Ensures traffic only routes to healthy VMs |
+
+---
+
+## Security Principles Demonstrated
+
+- **Default-deny networking** — the NSG blocks everything first; access is granted only by explicit, scoped exception.
+- **Least-privilege access** — SSH rules are scoped to specific source IPs and destinations, not left open.
+- **Network segmentation** — web servers have no public IP and sit behind the jump box, isolated from direct internet reach.
+- **Secure remote administration** — the jump box model funnels all admin access through one hardened, monitored entry point.
+- **Key-based authentication only** — password auth is disabled everywhere, removing brute-force as an attack path.
+- **Infrastructure as code** — Ansible provisions the web tier consistently and repeatably, reducing configuration drift.
+- **Controlled exposure** — only port 80 is exposed, and only through the load balancer, after the deny-all rule is explicitly lifted for that path.
 ---
 
 #### Setting up the Resource Group
