@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This project builds a secure, segmented cloud environment in Microsoft Azure to host a Red Team training range. The design follows a **ground-up security approach**.
+This project builds a secure, segmented Azure environment to host a Red Team training range, following a ground-up, default-deny security approach. A hardened jump box is the only internet-facing machine and the sole entry point; it runs a Dockerized Ansible container that auto-provisions two internal web servers (no public IP) running DVWA as the attack target. An NSG enforces default-deny with scoped SSH rules, all VMs use SSH key-only auth, and a load balancer exposes only port 80.
 
 ---
 
