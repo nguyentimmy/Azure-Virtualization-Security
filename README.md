@@ -14,21 +14,11 @@ This project builds a secure, segmented Azure environment to host a Red Team tra
 | **Virtual Network (VNet)** | Private network where all VMs and services communicate | Internal-only address space; the foundation for network segmentation |
 | **Subnet** | Segments the VNet; hosts the VMs | Internal IP addressing keeps web servers off the public internet |
 | **Network Security Group (NSG)** | Firewall controlling inbound/outbound traffic to the VNet and VMs | Default-deny baseline with explicit allow-rules layered above at lower priority numbers |
-| **NSG — Default-Deny rule** | Blocks all inbound traffic by default | Any source/port/protocol → Block; priority 4096 so all other rules evaluate first — least-privilege baseline |
-| **NSG — SSH allow (my IP)** | Permits SSH to the jump box from the admin's IP only | Source scoped to a single external IP; destination limited to the jump box internal IP; port 22/TCP only |
-| **NSG — SSH allow (jump box IP)** | Permits the jump box to reach the internal VNet over SSH | Source scoped to the jump box's private IP; enables provisioning without opening SSH to the internet |
-| **NSG — HTTP allow (port 80)** | Exposes the web app to the internet through the load balancer | Scoped to HTTP/TCP port 80 to VirtualNetwork; added only after the deny-all rule is removed for LB traffic |
-| **VM 1 — Jump Box Provisioner** *(Ubuntu 18.04, B1s, 1 vCPU/1 GB)* | Single hardened entry point; runs Docker + Ansible to configure the web VMs | Only VM with controlled public access; SSH key-only; access restricted to admin IP via NSG; the sole bridge into the internal network |
-| **VM 2 & 3 — Web-1 / Web-2** *(Ubuntu 18.04, B1ms, 1 vCPU/2 GB)* | Internal web servers running the DVWA target container | **No public IP** — reachable only via the jump box; SSH key-only; placed in an Availability Set |
-| **SSH Key Pair (RSA 2048)** | Authenticates all VM access | **Password auth disabled** — cryptographic keys only, preventing brute-force; keys rotated during provisioner setup |
 | **Availability Set** | Groups Web-1 and Web-2 for resilience | Required for load-balancer membership; provides fault tolerance across the web tier |
 | **Docker (on jump box)** | Container runtime hosting the Ansible provisioner | Isolates the provisioning tooling in a container rather than installing on the host directly |
 | **Ansible container** (`cyberxsecurity/ansible`) | Infrastructure-as-code tool that configures the web VMs automatically | Provisions consistently via playbook; uses its own dedicated SSH key to reach web VMs; `remote_user` scoped to the admin account |
-| **Ansible playbook** (`pentest.yml`) | Automates install of Docker + DVWA on the web servers | Repeatable, auditable configuration; no manual per-server changes |
 | **DVWA container** (`cyberxsecurity/dvwa`) | The intentionally vulnerable web app — the Red Team attack target | Isolated inside a container on internal-only VMs; reachable externally only through the controlled port-80 path |
 | **Load Balancer** *(static public IP)* | Distributes inbound web traffic across Web-1 and Web-2 | Static frontend IP; health probe monitors VM availability; backend pool spans both web VMs |
-| **LB — Load balancing rule** | Forwards port 80 from the LB to the web VNet | TCP/80 → backend 80; **session persistence** set to Client IP so an attacker's session stays pinned to one server mid-exercise |
-| **LB — Health probe** | Regularly checks that backend VMs can receive traffic | Ensures traffic only routes to healthy VMs |
 
 ---
 
