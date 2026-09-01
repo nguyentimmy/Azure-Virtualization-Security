@@ -3,7 +3,7 @@
 ## 🎯 Project Overview
 
 This project builds a secure, segmented Azure environment to host a Red Team training range, following a ground-up, default-deny security approach. A hardened jump box is the only internet-facing machine and the sole entry point; it runs a Dockerized Ansible container that auto-provisions two internal web servers (no public IP) running DVWA as the attack target. An NSG enforces default-deny with scoped SSH rules, all VMs use SSH key-only auth, and a load balancer exposes only port 80.
-- Once this lab is completed, can install the whole [ELK stack cluster](https://github.com/nguyentimmy/Azure-ELK-Stack/tree/main) in your Azure environment to provide real time monitoring.
+- ➡️ Once this lab is completed, can install the whole [ELK Stack Cluster - Part 2](https://github.com/nguyentimmy/Azure-ELK-Stack/tree/main) in your Azure environment to provide real time monitoring.
 
 ---
 
@@ -1026,3 +1026,5 @@ Now we have an environment that centers on a **jump box** architecture: a single
 Access control is enforced through a **Network Security Group (NSG)** with a default-deny rule, layered SSH allow-rules scoped to specific source IPs, and **SSH key-only authentication** (password auth disabled) across every VM. Finally, a **Load Balancer** distributes inbound web traffic across the two web servers, with the NSG configured to expose only port 80 to the internet.
 
 The result is a repeatable lab that demonstrates core cloud-security principles: network segmentation, least-privilege access, secure remote administration, infrastructure-as-code provisioning, and controlled exposure of services.
+
+- ➡️ Once this lab is completed, can install the whole [ELK Stack Cluster - Part 2](https://github.com/nguyentimmy/Azure-ELK-Stack/tree/main) in your Azure environment to provide real time monitoring.
